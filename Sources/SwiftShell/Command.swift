@@ -51,7 +51,7 @@ extension CommandRunning where Self: Context {
 
 extension CommandRunning {
 
-	func createProcess(_ executable: String, args: [String]) -> Process {
+	public func createProcess(_ executable: String, args: [String]) -> Process {
 
 		/**
 		If `executable` is not a path and a path for an executable file of that name can be found, return that path.
@@ -137,7 +137,7 @@ public final class RunOutput {
 	/// The error from running the command, if any.
 	public private(set) var error: CommandError?
 
-	init(launch output: AsyncCommand) {
+	public init(launch output: AsyncCommand) {
 		var _stderror = Data()
 		do {
 			try output.process.launchThrowably()
@@ -237,7 +237,7 @@ extension CommandRunning {
 public class PrintedAsyncCommand {
 	fileprivate let process: Process
 
-	init(unlaunched process: Process, combineOutput: Bool) {
+	public init(unlaunched process: Process, combineOutput: Bool) {
 		self.process = process
 
 		if combineOutput {
