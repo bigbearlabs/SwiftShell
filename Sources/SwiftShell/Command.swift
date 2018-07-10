@@ -333,7 +333,7 @@ public final class AsyncCommand: PrintedAsyncCommand {
 	public let stdout: ReadableStream
 	public let stderror: ReadableStream
 
-	override init(unlaunched process: Process, combineOutput: Bool) {
+	override public init(unlaunched process: Process, combineOutput: Bool) {
 		let outpipe = Pipe()
 		process.standardOutput = outpipe
 		stdout = FileHandleStream(outpipe.fileHandleForReading, encoding: main.encoding)
