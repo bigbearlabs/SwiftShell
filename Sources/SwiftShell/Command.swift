@@ -137,6 +137,8 @@ public final class RunOutput {
 	/// The error from running the command, if any.
 	public private(set) var error: CommandError?
 
+  private var stdErrorReadQueue = DispatchQueue(label: "swiftshell-async-command")
+  
 	init(launch output: AsyncCommand) {
 		var _stderror = Data()
 		do {
@@ -152,7 +154,7 @@ public final class RunOutput {
 				// a no-op work item.
 				stderrorWork = DispatchWorkItem {}
 			}
-			DispatchQueue.global().async(execute: stderrorWork)
+			stdErrorReadQueue.async(execute: stderrorWork)
 			_stdout = output.stdout.readData()
 			try output.finish()
 			stderrorWork.wait()
@@ -161,8 +163,11 @@ public final class RunOutput {
 		} catch {
 			assertionFailure("Unexpected error: \(error)")
 		}
-		self._stderror = _stderror
-		self.output = output
+    self.output = output
+    self._stderror = Data()
+    stdErrorReadQueue.sync {
+      self._stderror = _stderror
+    }
 	}
 
 	/// If text is single-line, trim it.
